@@ -2,33 +2,30 @@
 
 namespace app\core;
 
-Trait Database
+trait Database
 {
-
+    // Establish database connection using PDO
     private function connect()
     {
-        $string = "mysql:hostname=".DBHOST.";dbname=".DBNAME;
-        $con = new \PDO($string,DBUSER,DBPASS);
-        return $con;
-    }
-
-    public function query($query, $data = [])
-    {
-        $con = $this->connect();
-        $stm = $con->prepare($query);
-        $check = $stm->execute($data);
-        if($check)
-        {
-            $result = $stm->fetchAll(\PDO::FETCH_OBJ);
-            if(is_array($result) && count($result))
-            {
-                return $result;
-            }
+        $dsn = "mysql:host=" . DBHOST . ";dbname=" . DBNAME . ";charset=utf8mb4";
+        $options = [
+            \PDO::ATTR_EMULATE_PREPARES   => false, // Turn off emulation mode for "real" prepared statements
+            \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION, // Turn on errors in the form of exceptions
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC, // Makes database results easier to handle
+        ];
+        try {
+            $pdo = new \PDO($dsn, DBUSER, DBPASS, $options);
+            return $pdo;
+        } catch (\PDOException $e) {
+            throw new \PDOException($e->getMessage(), (int)$e->getCode());
         }
-
-        return false;
     }
 
+    // General purpose query function
+    public function query($sql, $params = [])
+    {
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(); // Default fetch mode set to FETCH_ASSOC
+    }
 }
-
-
