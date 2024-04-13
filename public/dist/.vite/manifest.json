@@ -12,5 +12,16 @@
     "css": [
       "assets/main-PZMd6JSm.css"
     ]
+  },
+  "plannerFeature.js": {
+    "file": "assets/plannerFeature-KJSm3ZGp.js",
+    "src": "src/plannerFeature.js",
+    "isEntry": true,
+    "imports": [
+      "_vendor-VHEz1d_j.js"
+    ],
+    "css": [
+      "assets/plannerFeature-QwRt5ZGm.css"
+    ]
   }
 }
